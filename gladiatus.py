@@ -26,6 +26,7 @@ def checkHp():
         global wait_time_label_cistus
         global wait_time_vodai_label
         global update_log
+        global hp_percentage
 
         hp_bar_element = driver.find_element(By.ID, "header_values_hp_bar")
 
@@ -88,6 +89,7 @@ def di_dau_truong():
     global update_log
     update_log('di_dau_truong')
     time.sleep(4)
+    update_image()
     driver.find_element(By.XPATH, "//*[contains(@onclick, 'startProvinciarumFight(this, 3')]").click()
     time.sleep(4)
     # Tìm element có id là reportHeader và lưu nội dung vào biến result
@@ -100,10 +102,10 @@ def di_dau_truong():
     ketqua = f"{current_time} - {result} \n {reward}"
     update_log(ketqua)
     requests.get(url+ketqua)
-
+    update_image()
 def check_dautruong():
     global driver  # Thêm dòng này để sử dụng biến driver toàn cục
-    driver.save_screenshot('checkdautruong.png')
+    update_image()
     try:
         text_element = driver.find_element(By.XPATH, "//div[text()='To Circus Turma']")
         link_element = text_element.find_element(By.XPATH, "following-sibling::a")
@@ -112,20 +114,60 @@ def check_dautruong():
         
     except Exception as e:
         pass
+def di_vodai():
+    global update_log
+    update_log('di_vodai')
+    time.sleep(4)
+    update_image()
+    driver.find_element(By.XPATH, "//*[@class='attack' and contains(@onclick, 'startProvinciarumFight')]").click()
+    time.sleep(4)
+    # Tìm element có id là reportHeader và lưu nội dung vào biến result
+    result = driver.find_element(By.ID, "reportHeader").text
 
+    # Tìm element có class="report_reward" và lưu nội dung vào biến reward
+    reward = driver.find_element(By.CLASS_NAME, "report_reward").text
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    ketqua = f"{current_time} - {result} \n {reward}"
+    update_log(ketqua)
+    requests.get(url+ketqua)
+    update_image()
+def check_vodai():
+    global driver  # Thêm dòng này để sử dụng biến driver toàn cục
+    global hp_percentage
+    global update_log
+    update_image()
+    if hp_percentage >=50:
+        try:
+            text_element = driver.find_element(By.XPATH, "//div[text()='Go to the arena']")
+            link_element = text_element.find_element(By.XPATH, "following-sibling::a")
+            link_element.click()
+            di_vodai()
+            
+        except Exception as e:
+            pass
+    else:
+        update_log('hp < 50% nghi ngoi')
 def check_farm():
-    try:
-        text_element = driver.find_element(By.XPATH, "//div[text()='Go to expedition']")
-        link_element = text_element.find_element(By.XPATH, "following-sibling::a")
-        link_element.click()
-        di_farm() 
-    except Exception as e:
-        pass
-
+    global driver  # Thêm dòng này để sử dụng biến driver toàn cục
+    global hp_percentage
+    global update_log
+    update_image()
+    if hp_percentage >=30:
+        try:
+            text_element = driver.find_element(By.XPATH, "//div[text()='Go to expedition']")
+            link_element = text_element.find_element(By.XPATH, "following-sibling::a")
+            link_element.click()
+            di_farm() 
+        except Exception as e:
+            pass
+    else:
+        update_log('hp < 30% nghi ngoi')
 def di_farm():
     global update_log
     update_log('di_farm')
     time.sleep(4)
+    update_image()
     driver.find_element(By.XPATH, "//button[contains(@class, 'expedition_button') and contains(@class, 'awesome-button')]").click()
     time.sleep(3)
     try:
@@ -144,7 +186,7 @@ def di_farm():
     ketqua = f"{current_time} - {result} \n {reward}"
     update_log(ketqua)
     requests.get(url + ketqua)
-
+    update_image()
 def di_dungeon():
     global update_log
     update_log('di_dungeon')
@@ -175,8 +217,9 @@ def di_dungeon():
     ketqua = f"{current_time} - {result} \n {reward}"
     update_log(ketqua)
     requests.get(url + ketqua)
-
+    update_image()
 def check_dungeon():
+    update_image()
     try:
         text_element = driver.find_element(By.XPATH, "//div[text()='Go to dungeon']")
         link_element = text_element.find_element(By.XPATH, "following-sibling::a")
@@ -267,16 +310,16 @@ def create_interface():
 
     tk.Label(stats_frame, text="Thời gian chờ farm:").grid(row=4, column=0)
     wait_time_farm_label = tk.Label(stats_frame, text="0")
-    wait_time_farm_label.grid(row=3, column=1)
+    wait_time_farm_label.grid(row=4, column=1)
     tk.Label(stats_frame, text="Thời gian chờ võ đài:").grid(row=5, column=0)
     wait_time_vodai_label = tk.Label(stats_frame, text="0")
-    wait_time_vodai_label.grid(row=4, column=1)
+    wait_time_vodai_label.grid(row=5, column=1)
     tk.Label(stats_frame, text="Thời gian chờ dungeon:").grid(row=6, column=0)
     wait_time_label_dungeon = tk.Label(stats_frame, text="0")
-    wait_time_label_dungeon.grid(row=5, column=1)
+    wait_time_label_dungeon.grid(row=6, column=1)
     tk.Label(stats_frame, text="Thời gian chờ Cistus:").grid(row=7, column=0)
     wait_time_label_cistus = tk.Label(stats_frame, text="0")
-    wait_time_label_cistus.grid(row=6, column=1)
+    wait_time_label_cistus.grid(row=7, column=1)
 
     # Khung log
     log_frame = tk.Frame(root)
@@ -305,10 +348,20 @@ def update_log(message):
     global log_text
     log_text.insert(tk.END, message + "\n")
     log_text.see(tk.END)  # Cuộn xuống cuối log
-
+def update_image():
+    global image_label
+    driver.save_screenshot('check.png')
+        
+    # Resize ảnh và cập nhật hiển thị trong giao diện
+    img = Image.open('check.png')  # Mở ảnh
+    img = img.resize((300, 250), Image.LANCZOS)  # Thay đổi kích thước ảnh
+    check_image = ImageTk.PhotoImage(img)  # Chuyển đổi ảnh thành PhotoImage
+    
+    image_label.config(image=check_image)  # Cập nhật ảnh trong label
+    image_label.image = check_image
 def start_auto():
     global update_log
-    global image_label
+    
     while True:
         try:
             driver.find_element(By.XPATH, "//input[@type='submit' and @value='OK']").click()
@@ -326,17 +379,10 @@ def start_auto():
         check_dungeon()
         check_dautruong()
         check_farm()
+        check_vodai()
         
         # Chụp ảnh trình duyệt và lưu vào file check.png
-        driver.save_screenshot('check.png')
-        
-        # Resize ảnh và cập nhật hiển thị trong giao diện
-        img = Image.open('check.png')  # Mở ảnh
-        img = img.resize((300, 250), Image.LANCZOS)  # Thay đổi kích thước ảnh
-        check_image = ImageTk.PhotoImage(img)  # Chuyển đổi ảnh thành PhotoImage
-        
-        image_label.config(image=check_image)  # Cập nhật ảnh trong label
-        image_label.image = check_image  # Giữ tham chiếu đến ảnh mới
+        update_image()
 
         time.sleep(5)  # Thay đổi thời gian chờ giữa các lần kiểm tra nếu cần
 
