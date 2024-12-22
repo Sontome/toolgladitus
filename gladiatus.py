@@ -9,6 +9,7 @@ import requests
 import tkinter as tk  # Thêm import tkinter
 from tkinter import messagebox, filedialog, ttk  # Thêm import cho messagebox và filedialog
 import threading  # Thêm import threading
+from PIL import Image, ImageTk  # Thêm import cho Pillow
 
 # Định nghĩa driver là biến toàn cục
 driver = None
@@ -216,10 +217,11 @@ def create_interface():
     global wait_time_label_cistus
     global wait_time_vodai_label
     global update_log
+    global image_label
     global root  # Thêm dòng này để sử dụng biến root toàn cục
     root = tk.Tk()
     root.title("Gladiatus Bot")
-    root.geometry("300x550")  # Đặt kích thước giao diện thành 300x800px
+    root.geometry("300x650")  # Đặt kích thước giao diện thành 300x800px
     root.eval('tk::PlaceWindow . center')  # Đặt giao diện ở giữa màn hình
     root.update_idletasks()  # Cập nhật giao diện
     x = root.winfo_screenwidth() - root.winfo_width()  # Tính toán vị trí x để đặt bên phải
@@ -274,7 +276,16 @@ def create_interface():
     
     log_text = tk.Text(log_frame, height=10, width=50)
     log_text.pack()
+    image_frame = tk.Frame(root)
+    image_frame.pack(pady=10)
 
+    # Tải ảnh check.png
+    img = Image.open('check.png')  # Mở ảnh
+    img = img.resize((300, 250), Image.LANCZOS)  # Thay đổi kích thước ảnh
+    check_image = ImageTk.PhotoImage(img)  # Chuyển đổi ảnh thành PhotoImage
+    image_label = tk.Label(image_frame, image=check_image)
+    image_label.image = check_image  # Giữ tham chiếu đến ảnh
+    image_label.pack()
     
 
     # Ví dụ cập nhật log
@@ -289,7 +300,7 @@ def update_log(message):
 
 def start_auto():
     global update_log
-    
+    global image_label
     while True:
         try:
             driver.find_element(By.XPATH, "//input[@type='submit' and @value='OK']").click()
@@ -307,6 +318,18 @@ def start_auto():
         check_dungeon()
         check_dautruong()
         check_farm()
+        
+        # Chụp ảnh trình duyệt và lưu vào file check.png
+        driver.save_screenshot('check.png')
+        
+        # Resize ảnh và cập nhật hiển thị trong giao diện
+        img = Image.open('check.png')  # Mở ảnh
+        img = img.resize((300, 250), Image.LANCZOS)  # Thay đổi kích thước ảnh
+        check_image = ImageTk.PhotoImage(img)  # Chuyển đổi ảnh thành PhotoImage
+        
+        image_label.config(image=check_image)  # Cập nhật ảnh trong label
+        image_label.image = check_image  # Giữ tham chiếu đến ảnh mới
+
         time.sleep(5)  # Thay đổi thời gian chờ giữa các lần kiểm tra nếu cần
 
 def login():
