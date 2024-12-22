@@ -375,6 +375,10 @@ def start_auto():
             driver.find_element(By.XPATH, "//input[@type='submit' and @value='Close']").click()
         except:
             pass
+        try:
+            driver.find_element(By.XPATH, "//input[@type='submit' and @value='Yes']").click()
+        except:
+            pass
         checkHp()
         check_dungeon()
         check_dautruong()
