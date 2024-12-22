@@ -157,6 +157,8 @@ def create_interface():
 
     tk.Button(login_frame, text="Login", command=login).grid(row=0, column=0)
 
+    
+
     # Khung chọn file cookie
     cookie_frame = tk.Frame(root)
     cookie_frame.pack(pady=10)
@@ -218,9 +220,9 @@ def login():
         opt.add_argument("--window-size=1000,1000")
         opt.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
 
-        # Nhập từ người dùng để quyết định có hiển thị trình duyệt hay không
-        user_input = 'y'
-        if user_input.lower() == 'y':
+        # Hiện thông báo cho người dùng lựa chọn hiển thị trình duyệt
+        user_input = messagebox.askquestion("Hiển thị trình duyệt", "Bạn có muốn hiển thị trình duyệt không? (y/n)")  # Sử dụng messagebox để hỏi người dùng
+        if user_input == 'yes':
             pass
         else:
             opt.add_argument('headless')  # Thêm tùy chọn headless nếu không muốn hiển thị trình duyệt
