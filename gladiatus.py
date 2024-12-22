@@ -18,6 +18,7 @@ url = 'https://api.telegram.org/bot5737041469:AAG5XdXVwATvldvDpXmnlQT0dmh2-sZ70g
 def checkHp():
     try:
         global exp_label
+        global gold_label
         global hp_label
         global hp_progress
         global wait_time_farm_label
@@ -62,6 +63,9 @@ def checkHp():
             hp_progress.config(style='yellow.Horizontal.TProgressbar')
         else:
             hp_progress.config(style='red.Horizontal.TProgressbar')
+        gold_text_element = driver.find_element(By.ID, "sstat_gold_val")
+        gold_text = gold_text_element.text
+        gold_label.config(text=gold_text)
 
         arena_text_element = driver.find_element(By.ID, "cooldown_bar_text_arena")
         arena_text = arena_text_element.text
@@ -212,6 +216,7 @@ def create_interface():
     global hp_label
     global exp_label
     global hp_progress
+    global gold_label
     global wait_time_farm_label
     global wait_time_label_dungeon
     global wait_time_label_cistus
@@ -221,7 +226,7 @@ def create_interface():
     global root  # Thêm dòng này để sử dụng biến root toàn cục
     root = tk.Tk()
     root.title("Gladiatus Bot")
-    root.geometry("300x650")  # Đặt kích thước giao diện thành 300x800px
+    root.geometry("300x750")  # Đặt kích thước giao diện thành 300x800px
     root.eval('tk::PlaceWindow . center')  # Đặt giao diện ở giữa màn hình
     root.update_idletasks()  # Cập nhật giao diện
     x = root.winfo_screenwidth() - root.winfo_width()  # Tính toán vị trí x để đặt bên phải
@@ -256,17 +261,20 @@ def create_interface():
     tk.Label(stats_frame, text="EXP:").grid(row=2, column=0)
     exp_label = tk.Label(stats_frame, text="0")
     exp_label.grid(row=2, column=1)
+    tk.Label(stats_frame, text="Vàng:").grid(row=3, column=0)
+    gold_label = tk.Label(stats_frame, text="0")
+    gold_label.grid(row=3, column=1)
 
-    tk.Label(stats_frame, text="Thời gian chờ farm:").grid(row=3, column=0)
+    tk.Label(stats_frame, text="Thời gian chờ farm:").grid(row=4, column=0)
     wait_time_farm_label = tk.Label(stats_frame, text="0")
     wait_time_farm_label.grid(row=3, column=1)
-    tk.Label(stats_frame, text="Thời gian chờ võ đài:").grid(row=4, column=0)
+    tk.Label(stats_frame, text="Thời gian chờ võ đài:").grid(row=5, column=0)
     wait_time_vodai_label = tk.Label(stats_frame, text="0")
     wait_time_vodai_label.grid(row=4, column=1)
-    tk.Label(stats_frame, text="Thời gian chờ dungeon:").grid(row=5, column=0)
+    tk.Label(stats_frame, text="Thời gian chờ dungeon:").grid(row=6, column=0)
     wait_time_label_dungeon = tk.Label(stats_frame, text="0")
     wait_time_label_dungeon.grid(row=5, column=1)
-    tk.Label(stats_frame, text="Thời gian chờ Cistus:").grid(row=6, column=0)
+    tk.Label(stats_frame, text="Thời gian chờ Cistus:").grid(row=7, column=0)
     wait_time_label_cistus = tk.Label(stats_frame, text="0")
     wait_time_label_cistus.grid(row=6, column=1)
 
