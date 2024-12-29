@@ -361,7 +361,8 @@ def update_image():
     image_label.image = check_image
 def start_auto():
     global update_log
-    
+    global vodai
+
     while True:
         try:
             driver.find_element(By.XPATH, "//input[@type='submit' and @value='OK']").click()
@@ -383,7 +384,10 @@ def start_auto():
         check_dungeon()
         check_dautruong()
         check_farm()
-        check_vodai()
+        if vodai == "on":
+            check_vodai()
+        else :
+            update_log("Off Vo Dai")
         
         # Chụp ảnh trình duyệt và lưu vào file check.png
         update_image()
@@ -393,9 +397,11 @@ def start_auto():
 def login():
     global update_log
     global root
+    global vodai
 
     def perform_login():
         global driver  # Thêm dòng này để sử dụng biến driver toàn cục
+        global vodai
         opt = webdriver.ChromeOptions()
         opt.add_argument("--window-size=1000,1000")
         opt.add_experimental_option("excludeSwitches", ["ignore-certificate-errors"])
@@ -404,9 +410,10 @@ def login():
         user_input = messagebox.askquestion("Hiển thị trình duyệt", "Bạn có muốn hiển thị trình duyệt không? (y/n)")  # Sử dụng messagebox để hỏi người dùng
         if user_input == 'yes':
             pass
+            vodai = "off"
         else:
             opt.add_argument('headless')  # Thêm tùy chọn headless nếu không muốn hiển thị trình duyệt
-
+            vodai = "on"
         root.after(100, lambda: update_log("Đang đăng nhập..."))  # Cập nhật log trước khi bắt đầu
         driver = webdriver.Chrome(options=opt)  # Gán driver cho biến toàn cục
         root.after(100, lambda: update_log("Trình duyệt đã khởi động."))  # Cập nhật log sau khi khởi động trình duyệt
@@ -419,7 +426,7 @@ def login():
         # Thêm cookie vào trình duyệt
         for cookie in cookies:
             driver.add_cookie(cookie)
-        time.sleep(3)
+        time.sleep(10)
         # Tải lại trang để áp dụng cookie
         driver.find_element(By.XPATH, '//*[@id="joinGame"]/button').click()
         
