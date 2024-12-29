@@ -389,7 +389,7 @@ def start_auto():
         update_image()
 
         time.sleep(5)  # Thay đổi thời gian chờ giữa các lần kiểm tra nếu cần
-
+        driver.refresh()
 def login():
     global update_log
     global root
